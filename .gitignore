@@ -1,0 +1,55 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment / secrets
+.env
+*.env
+.env.*
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Logs and runtime data
+*.log
+suricata/log/*.json
+suricata/log/*.jsonl
+
+# Keep log folder structure
+!suricata/log/.gitkeep
+
+# Docker temporary files
+.docker/
+docker-compose.override.yml
+
+# IDE / editor
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary backup files
+*.bak
+*.tmp
+
+
+# Vim swap/session files
+*.swp
+*.swo
+*.swn
+*.swm
+*.swl
+*.swk
+*.swj
+.*.swp
+.*.swo
+.*.swn
+.*.swm
+.*.swl
+.*.swk
+.*.swj

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cyber Defense Platform Dashboard</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header>
+    <h1>Next-Generation Cyber Defense Platform</h1>
+    <p>Autonomous Response | Predictive Threat Modeling | Adaptive Security | PQC</p>
+  </header>
+
+  <main>
+    <section class="status-banner">
+      <div>
+        <span class="status-dot" id="live-status-dot"></span>
+        <strong id="live-status-text">SOC Status: Monitoring</strong>
+      </div>
+      <div class="last-refresh">
+        Last Refresh: <span id="last-refresh-time">--</span>
+      </div>
+    </section>
+
+    <section class="incident-strip">
+      <div class="incident-box">
+        <h3>Threat Level</h3>
+        <p id="threat-level">LOW</p>
+      </div>
+      <div class="incident-box">
+        <h3>Active Incidents</h3>
+        <p id="active-incidents">0</p>
+      </div>
+      <div class="incident-box">
+        <h3>Blocked Events</h3>
+        <p id="blocked-events">0</p>
+      </div>
+    </section>
+
+    <section class="ticker-banner">
+      <span>LIVE FEED:</span>
+      <marquee id="threat-ticker" behavior="scroll" direction="left">
+        Monitoring network activity...
+      </marquee>
+    </section>
+
+    <section class="summary-grid">
+      <div class="summary-card">
+        <h3>Top Source IP</h3>
+        <p id="top-src-ip">--</p>
+      </div>
+      <div class="summary-card">
+        <h3>Top Signature</h3>
+        <p id="top-signature">--</p>
+      </div>
+      <div class="summary-card">
+        <h3>Highest Risk</h3>
+        <p id="highest-risk">0.00</p>
+      </div>
+      <div class="summary-card">
+        <h3>Latest Response</h3>
+        <p id="latest-response">--</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Platform Overview</h2>
+      <div class="overview-grid">
+        <div class="stat-box">
+          <h3>Health</h3>
+          <p id="health-status">Loading...</p>
+        </div>
+        <div class="stat-box">
+          <h3>Alerts</h3>
+          <p id="alerts-count">0</p>
+        </div>
+        <div class="stat-box">
+          <h3>Predictions</h3>
+          <p id="predictions-count">0</p>
+        </div>
+        <div class="stat-box">
+          <h3>Responses</h3>
+          <p id="responses-count">0</p>
+        </div>
+      </div>
+      <button onclick="loadOverview()">Refresh Overview</button>
+    </section>
+
+    <section class="card">
+      <h2>IoT / Edge Simulation</h2>
+      <button onclick="simulateIoTThreat()">Simulate IoT Threat</button>
+      <pre id="iot-result">No simulation yet.</pre>
+    </section>
+
+    <section class="card">
+      <h2>Self-Healing Controls</h2>
+      <div class="button-row">
+        <button onclick="selfHeal('suricata')">Restart Suricata</button>
+        <button onclick="selfHeal('opa')">Restart OPA</button>
+        <button onclick="selfHeal('orchestrator')">Restart Orchestrator</button>
+      </div>
+      <pre id="self-heal-result">No action taken yet.</pre>
+    </section>
+
+    <section class="card">
+      <h2>Suricata Detection Panel</h2>
+      <button onclick="loadAlerts()">Refresh Alerts</button>
+      <div id="alerts-table-container"></div>
+    </section>
+
+    <section class="card">
+      <h2>Threat Predictions</h2>
+      <button onclick="loadPredictions()">Refresh Predictions</button>
+      <div id="predictions-table-container"></div>
+    </section>
+
+    <section class="card">
+      <h2>Autonomous Responses</h2>
+      <button onclick="loadResponses()">Refresh Responses</button>
+      <div id="responses-table-container"></div>
+    </section>
+
+    <section class="card">
+      <h2>Threat Activity Chart</h2>
+      <canvas id="threatChart" height="120"></canvas>
+    </section>
+
+    <section class="card">
+      <h2>Threat Trend Analysis</h2>
+      <canvas id="trendChart" height="120"></canvas>
+    </section>
+
+    <section class="card">
+      <h2>Adaptive Policy Engine</h2>
+      <div class="form-grid">
+        <input id="policy-signature" type="text" placeholder="Signature (e.g. sqlmap injection)" />
+        <input id="policy-risk" type="number" step="0.01" placeholder="Risk score (e.g. 0.95)" />
+        <button onclick="testPolicy()">Test Policy</button>
+      </div>
+      <pre id="policy-result">No policy test yet.</pre>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>

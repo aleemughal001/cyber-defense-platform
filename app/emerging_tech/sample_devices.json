@@ -1,0 +1,26 @@
+[
+  {
+    "device_id": "cam-001",
+    "device_type": "smart_camera",
+    "firmware_version": "1.0.2",
+    "location": "edge-branch-1",
+    "network_zone": "iot",
+    "expected_protocol": "mqtt"
+  },
+  {
+    "device_id": "sensor-002",
+    "device_type": "temperature_sensor",
+    "firmware_version": "2.1.0",
+    "location": "factory-edge-1",
+    "network_zone": "iot",
+    "expected_protocol": "coap"
+  },
+  {
+    "device_id": "badge-003",
+    "device_type": "access_control_panel",
+    "firmware_version": "3.0.1",
+    "location": "hq-edge-2",
+    "network_zone": "iot",
+    "expected_protocol": "https"
+  }
+]
