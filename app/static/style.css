@@ -402,3 +402,88 @@ p {
   color: #ef4444 !important;
   text-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
 }
+
+
+.future-defense-section {
+  margin-top: 40px;
+  padding: 30px;
+  border-radius: 18px;
+  background: rgba(8, 16, 32, 0.95);
+  border: 1px solid rgba(0, 255, 170, 0.25);
+  box-shadow: 0 0 25px rgba(0, 255, 170, 0.08);
+}
+
+.future-defense-section h2 {
+  margin-bottom: 8px;
+  font-size: 28px;
+  color: #00ffaa;
+}
+
+.section-subtitle {
+  color: #b8c7d9;
+  margin-bottom: 24px;
+}
+
+.future-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.future-card {
+  padding: 20px;
+  border-radius: 16px;
+  background: rgba(12, 24, 45, 0.95);
+  border: 1px solid rgba(0, 180, 255, 0.18);
+}
+
+.future-card h3 {
+  margin-top: 0;
+  color: #ffffff;
+}
+
+.future-card p {
+  color: #aebed0;
+  font-size: 14px;
+}
+
+.future-card button {
+  margin: 12px 0;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 10px;
+  background: #00ffaa;
+  color: #06111f;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.future-card button:hover {
+  opacity: 0.85;
+}
+
+.future-card pre {
+  max-height: 260px;
+  overflow: auto;
+  padding: 14px;
+  border-radius: 12px;
+  background: #050b14;
+  color: #d9fbe8;
+  font-size: 12px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.wide-card {
+  grid-column: span 2;
+}
+
+@media (max-width: 800px) {
+  .future-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .wide-card {
+    grid-column: span 1;
+  }
+}

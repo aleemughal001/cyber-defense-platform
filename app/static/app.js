@@ -631,3 +631,86 @@ document.addEventListener("DOMContentLoaded", () => {
   refreshDashboard();
   setInterval(refreshDashboard, AUTO_REFRESH_MS);
 });
+
+async function runZeroDaySimulation() {
+  const output = document.getElementById("zeroDayOutput");
+  output.textContent = "Running zero-day simulation...";
+
+  try {
+    const response = await fetch("/simulate-zero-day", {
+      method: "POST",
+      cache: "no-store"
+    });
+    const data = await response.json();
+    output.textContent = JSON.stringify(data, null, 2);
+  } catch (error) {
+    output.textContent = "Error running zero-day simulation: " + error;
+  }
+}
+
+async function loadThreatForecast() {
+  const output = document.getElementById("forecastOutput");
+  output.textContent = "Loading threat forecast...";
+
+  try {
+    const response = await fetch("/forecast-threats", {
+      cache: "no-store"
+    });
+    const data = await response.json();
+    output.textContent = JSON.stringify(data, null, 2);
+  } catch (error) {
+    output.textContent = "Error loading threat forecast: " + error;
+  }
+}
+
+async function verifyAuditChain() {
+  const output = document.getElementById("auditOutput");
+  output.textContent = "Verifying audit chain...";
+
+  try {
+    const response = await fetch("/audit/verify", {
+      cache: "no-store"
+    });
+    const data = await response.json();
+    output.textContent = JSON.stringify(data, null, 2);
+  } catch (error) {
+    output.textContent = "Error verifying audit chain: " + error;
+  }
+}
+
+async function runSelfHealing() {
+  const output = document.getElementById("selfHealOutput");
+  output.textContent = "Running self-healing workflow...";
+
+  try {
+    const response = await fetch("/self-heal/suricata", {
+      method: "POST",
+      cache: "no-store"
+    });
+    const data = await response.json();
+    output.textContent = JSON.stringify(data, null, 2);
+  } catch (error) {
+    output.textContent = "Error running self-healing: " + error;
+  }
+}
+
+async function loadCapabilityMap() {
+  const output = document.getElementById("capabilityOutput");
+  output.textContent = "Loading capability map...";
+
+  try {
+    const response = await fetch("/capability-map", {
+      cache: "no-store"
+    });
+    const data = await response.json();
+    output.textContent = JSON.stringify(data, null, 2);
+  } catch (error) {
+    output.textContent = "Error loading capability map: " + error;
+  }
+}
+
+window.runZeroDaySimulation = runZeroDaySimulation;
+window.loadThreatForecast = loadThreatForecast;
+window.verifyAuditChain = verifyAuditChain;
+window.runSelfHealing = runSelfHealing;
+window.loadCapabilityMap = loadCapabilityMap;

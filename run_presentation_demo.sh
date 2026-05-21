@@ -1,99 +1,66 @@
-#!/usr/bin/env bash
-set -e
+#!/bin/bash
 
-echo "=============================="
-echo "STEP 1: Starting platform"
-echo "=============================="
-docker compose up -d --build
-sleep 5
+BASE_URL="http://localhost:8000"
 
-echo
-echo "=============================="
-echo "STEP 2: Health and stats"
-echo "=============================="
-curl http://localhost:8000/health
-echo
-curl http://localhost:8000/stats
-echo
+echo "======================================"
+echo " AUTONOMOUS CYBER DEFENSE DEMO"
+echo "======================================"
 
-echo
-echo "=============================="
-echo "STEP 3: Generate suspicious traffic"
-echo "=============================="
-chmod +x scripts/send-test-traffic.sh
-./scripts/send-test-traffic.sh
-sleep 5
+echo ""
+echo "[1] Health Check"
+curl -s $BASE_URL/health
+echo ""
 
-echo
-echo "=============================="
-echo "STEP 4: Show recent alerts"
-echo "=============================="
-curl http://localhost:8000/recent-alerts
-echo
+echo ""
+echo "[2] Current Platform Stats"
+curl -s $BASE_URL/stats
+echo ""
 
-echo
-echo "=============================="
-echo "STEP 5: Show recent predictions"
-echo "=============================="
-curl http://localhost:8000/recent-predictions
-echo
+echo ""
+echo "[3] Simulating IoT Threat"
+curl -s -X POST $BASE_URL/simulate-iot-threat
+echo ""
 
-echo
-echo "=============================="
-echo "STEP 6: Show adaptive policy decision"
-echo "=============================="
-curl -s -X POST http://localhost:8181/v1/data/cyberdefense \
-  -H "Content-Type: application/json" \
-  -d '{
-    "input": {
-      "src_ip": "8.8.8.8",
-      "signature": "LOCAL Suspicious User-Agent sqlmap",
-      "risk_score": 0.95
-    }
-  }'
-echo
+echo ""
+echo "[4] Simulating Zero-Day Style Threat"
+curl -s -X POST $BASE_URL/simulate-zero-day
+echo ""
 
-echo
-echo "=============================="
-echo "STEP 7: Show autonomous responses"
-echo "=============================="
-curl http://localhost:8000/recent-responses
-echo
+echo ""
+echo "[5] Predictive Threat Forecast"
+curl -s $BASE_URL/forecast-threats
+echo ""
 
-echo
-echo "=============================="
-echo "STEP 8: Run scikit-learn forecast demo"
-echo "=============================="
-docker exec -it orchestrator python sklearn_forecast_demo.py
+echo ""
+echo "[6] Testing Adaptive OPA Policy"
+curl -s -X POST $BASE_URL/test-policy \
+-H "Content-Type: application/json" \
+-d '{
+  "signature": "sqlmap injection attempt",
+  "risk_score": 0.91,
+  "src_ip": "192.168.1.50",
+  "is_edge_device": 0,
+  "firmware_outdated": 0,
+  "adversarial_detected": 0
+}'
+echo ""
 
-echo
-echo "=============================="
-echo "STEP 9: Run PQC / TLS demo"
-echo "=============================="
-chmod +x pqc/run-pqc-demo.sh
-./pqc/run-pqc-demo.sh
+echo ""
+echo "[7] Self-Healing Simulation"
+curl -s -X POST $BASE_URL/self-heal/suricata
+echo ""
 
-echo
-echo "=============================="
-echo "STEP 10: Simulating IoT / Edge Threat"
-echo "=============================="
-curl -X POST http://localhost:8000/simulate-iot-threat
-echo
+echo ""
+echo "[8] Audit Ledger Verification"
+curl -s $BASE_URL/audit/verify
+echo ""
 
-echo "=============================="
-echo "STEP 11: Platform Stats"
-echo "=============================="
-curl http://localhost:8000/stats
-echo
+echo ""
+echo "[9] Capability Mapping"
+curl -s $BASE_URL/capability-map
+echo ""
 
-echo "=============================="
-echo "STEP 12: Recent Alerts"
-echo "=============================="
-curl http://localhost:8000/recent-alerts
-echo
-
-echo "=============================="
-echo "STEP 13: Recent Responses"
-echo "=============================="
-curl http://localhost:8000/recent-responses
-echo
+echo ""
+echo "======================================"
+echo " DEMO COMPLETED"
+echo "======================================"

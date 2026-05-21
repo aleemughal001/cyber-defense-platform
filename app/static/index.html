@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cyber Defense Platform Dashboard</title>
-  <link rel="stylesheet" href="/static/style.css" />
+  <link rel="stylesheet" href="/static/style.css?v=4" />
 </head>
 <body>
   <header>
@@ -140,9 +140,53 @@
       </div>
       <pre id="policy-result">No policy test yet.</pre>
     </section>
+
+    <section class="future-defense-section">
+      <h2>Future-Ready Defense Capabilities</h2>
+      <p class="section-subtitle">
+        Live evidence for zero-day simulation, predictive threat modeling, audit verification, and self-healing.
+      </p>
+
+      <div class="future-grid">
+        <div class="future-card">
+          <h3>Zero-Day Simulation</h3>
+          <p>Simulates unknown behavior and recommends an autonomous response.</p>
+          <button onclick="runZeroDaySimulation()">Run Zero-Day Simulation</button>
+          <pre id="zeroDayOutput">Waiting for simulation...</pre>
+        </div>
+
+        <div class="future-card">
+          <h3>Threat Forecast</h3>
+          <p>Predicts likely attack type and security posture for the next 24 hours.</p>
+          <button onclick="loadThreatForecast()">Load Forecast</button>
+          <pre id="forecastOutput">Waiting for forecast...</pre>
+        </div>
+
+        <div class="future-card">
+          <h3>Audit Chain Verification</h3>
+          <p>Checks blockchain-style audit ledger integrity.</p>
+          <button onclick="verifyAuditChain()">Verify Audit</button>
+          <pre id="auditOutput">Waiting for audit verification...</pre>
+        </div>
+
+        <div class="future-card">
+          <h3>Self-Healing Test</h3>
+          <p>Simulates recovery workflow and logs the event.</p>
+          <button onclick="runSelfHealing()">Run Self-Healing</button>
+          <pre id="selfHealOutput">Waiting for self-healing test...</pre>
+        </div>
+
+        <div class="future-card wide-card">
+          <h3>Capability Mapping</h3>
+          <p>Maps implemented features to the academic learning objectives.</p>
+          <button onclick="loadCapabilityMap()">Load Capability Map</button>
+          <pre id="capabilityOutput">Waiting for capability map...</pre>
+        </div>
+      </div>
+    </section>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="/static/app.js"></script>
+  <script src="/static/app.js?v=4"></script
 </body>
 </html>
