@@ -1,4 +1,5 @@
 import threading
+import time
 import os
 import requests
 from datetime import datetime
@@ -26,6 +27,18 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 EVE_FILE = os.getenv("SURICATA_EVE_FILE", "/data/eve.json")
 OPA_URL = "http://opa:8181/v1/data/cyberdefense"
+
+# In-memory service health state used for automatic self-healing demonstration
+SERVICE_HEALTH = {
+    "suricata": "healthy",
+    "opa": "healthy",
+    "orchestrator": "healthy"
+}
+
+AUTO_HEAL_CHECK_INTERVAL_SECONDS = 5
+AUTO_HEAL_COOLDOWN_SECONDS = 30
+LAST_AUTO_HEAL = {}
+AUTO_HEAL_MONITOR_STARTED = False
 
 
 @app.get("/")
@@ -542,6 +555,132 @@ def capability_map():
     }
 
 
+
+@app.post("/simulate-service-degradation/{service_name}")
+def simulate_service_degradation(service_name: str):
+    allowed_services = {"suricata", "opa", "orchestrator"}
+
+    if service_name not in allowed_services:
+        return {
+            "status": "error",
+            "message": f"Unsupported service: {service_name}",
+            "allowed_services": list(allowed_services)
+        }
+
+    SERVICE_HEALTH[service_name] = "degraded"
+
+    return {
+        "status": "success",
+        "service": service_name,
+        "health": "degraded",
+        "message": f"{service_name} marked as degraded. Auto-healing monitor will recover it automatically.",
+        "timestamp": datetime.utcnow().isoformat()
+    }
+
+
+@app.get("/service-health")
+def service_health():
+    return {
+        "status": "success",
+        "services": SERVICE_HEALTH,
+        "auto_heal_check_interval_seconds": AUTO_HEAL_CHECK_INTERVAL_SECONDS,
+        "timestamp": datetime.utcnow().isoformat()
+    }
+
+
+def execute_auto_self_heal(service_name: str):
+    db = SessionLocal()
+
+    try:
+        health_before = SERVICE_HEALTH.get(service_name, "unknown")
+        recovery_action = "restart_simulated"
+        health_after = "healthy"
+        timestamp = datetime.utcnow().isoformat()
+
+        SERVICE_HEALTH[service_name] = health_after
+
+        reason = (
+            f"Automatic self-healing workflow executed for {service_name}. "
+            f"Health changed from {health_before} to {health_after}. "
+            f"Action: {recovery_action}."
+        )
+
+        response_row = insert_response(
+            db,
+            src_ip="system",
+            action_taken=f"self_heal_{service_name}",
+            reason=reason
+        )
+
+        append_audit_record(
+            event_type="automatic_self_healing_event",
+            payload={
+                "service": service_name,
+                "health_before": health_before,
+                "recovery_action": recovery_action,
+                "health_after": health_after,
+                "response_id": response_row.id,
+                "trigger": "auto_health_monitor",
+                "timestamp": timestamp
+            }
+        )
+
+        return {
+            "status": "success",
+            "service": service_name,
+            "health_before": health_before,
+            "recovery_action": recovery_action,
+            "health_after": health_after,
+            "response_id": response_row.id,
+            "audit_logged": True,
+            "trigger": "auto_health_monitor",
+            "timestamp": timestamp
+        }
+
+    except Exception as e:
+        db.rollback()
+        return {
+            "status": "error",
+            "service": service_name,
+            "message": str(e),
+            "audit_logged": False
+        }
+
+    finally:
+        db.close()
+
+
+def auto_health_monitor():
+    while True:
+        now = time.time()
+
+        for service_name, health in list(SERVICE_HEALTH.items()):
+            if health != "degraded":
+                continue
+
+            last_heal = LAST_AUTO_HEAL.get(service_name, 0)
+
+            if now - last_heal >= AUTO_HEAL_COOLDOWN_SECONDS:
+                execute_auto_self_heal(service_name)
+                LAST_AUTO_HEAL[service_name] = now
+
+        time.sleep(AUTO_HEAL_CHECK_INTERVAL_SECONDS)
+
+
+def start_auto_health_monitor():
+    global AUTO_HEAL_MONITOR_STARTED
+
+    if AUTO_HEAL_MONITOR_STARTED:
+        return
+
+    thread = threading.Thread(
+        target=auto_health_monitor,
+        daemon=True
+    )
+    thread.start()
+    AUTO_HEAL_MONITOR_STARTED = True
+
+
 @app.get("/test-db")
 def test_db():
     db = SessionLocal()
@@ -563,3 +702,6 @@ def start_watcher():
 
 
 start_watcher()
+
+# Start automatic self-healing monitor
+start_auto_health_monitor()
