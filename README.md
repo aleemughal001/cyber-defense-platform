@@ -1,4 +1,3 @@
-cat > README.md <<'EOF'
 # Autonomous Cyber Defense Platform
 
 This project is a proof-of-concept autonomous cyber defense platform designed for EduQual Level 6 assessment. It demonstrates threat detection, predictive risk scoring, adaptive policy decisions, autonomous response, self-healing simulation, post-quantum cryptography awareness, and audit logging.
