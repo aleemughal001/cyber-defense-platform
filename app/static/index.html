@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cyber Defense Platform Dashboard</title>
-  <link rel="stylesheet" href="/static/style.css?v=4" />
+  <link rel="stylesheet" href="/static/style.css?v=5" />
 </head>
 <body>
   <header>
@@ -144,7 +144,7 @@
     <section class="future-defense-section">
       <h2>Future-Ready Defense Capabilities</h2>
       <p class="section-subtitle">
-        Live evidence for zero-day simulation, predictive threat modeling, audit verification, and self-healing.
+        Live evidence for zero-day simulation, predictive threat modeling, ML forecasting, audit verification, and self-healing.
       </p>
 
       <div class="future-grid">
@@ -160,6 +160,13 @@
           <p>Predicts likely attack type and security posture for the next 24 hours.</p>
           <button onclick="loadThreatForecast()">Load Forecast</button>
           <pre id="forecastOutput">Waiting for forecast...</pre>
+        </div>
+
+        <div class="future-card">
+          <h3>ML Forecasting</h3>
+          <p>Uses scikit-learn Random Forest to predict the next alert count.</p>
+          <button onclick="runMlForecast()">Run ML Forecast</button>
+          <pre id="mlForecastOutput">Waiting for ML forecast...</pre>
         </div>
 
         <div class="future-card">
@@ -187,6 +194,6 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="/static/app.js?v=4"></script
+  <script src="/static/app.js?v=5"></script>
 </body>
 </html>

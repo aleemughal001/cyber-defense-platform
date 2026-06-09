@@ -714,3 +714,33 @@ window.loadThreatForecast = loadThreatForecast;
 window.verifyAuditChain = verifyAuditChain;
 window.runSelfHealing = runSelfHealing;
 window.loadCapabilityMap = loadCapabilityMap;
+
+async function runMlForecast() {
+  const output = document.getElementById("mlForecastOutput");
+  if (!output) return;
+
+  output.textContent = "Running ML forecast...";
+
+  try {
+    const response = await fetch("/ml-forecast");
+    const data = await response.json();
+    output.textContent = JSON.stringify(data, null, 2);
+  } catch (error) {
+    output.textContent = "Error running ML forecast: " + error;
+  }
+}
+
+async function runMlForecast() {
+  const output = document.getElementById("mlForecastOutput");
+  if (!output) return;
+
+  output.textContent = "Running ML forecast...";
+
+  try {
+    const response = await fetch("/ml-forecast");
+    const data = await response.json();
+    output.textContent = JSON.stringify(data, null, 2);
+  } catch (error) {
+    output.textContent = "Error running ML forecast: " + error;
+  }
+}

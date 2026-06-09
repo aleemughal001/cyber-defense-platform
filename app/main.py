@@ -681,6 +681,50 @@ def start_auto_health_monitor():
     AUTO_HEAL_MONITOR_STARTED = True
 
 
+
+@app.get("/ml-forecast")
+def ml_forecast():
+    import numpy as np
+    from sklearn.ensemble import RandomForestRegressor
+
+    # Simulated historical alert counts over time
+    alert_counts = np.array([
+        3, 4, 5, 4, 6, 7, 8, 10, 9, 11,
+        12, 13, 15, 14, 16, 18, 19, 21, 20, 22,
+        24, 25, 27, 29, 28, 30, 31, 33, 35, 36
+    ], dtype=float)
+
+    window = 5
+    X = []
+    y = []
+
+    for i in range(len(alert_counts) - window):
+        X.append(alert_counts[i:i + window])
+        y.append(alert_counts[i + window])
+
+    X = np.array(X)
+    y = np.array(y)
+
+    model = RandomForestRegressor(n_estimators=100, random_state=42)
+    model.fit(X, y)
+
+    last_window = alert_counts[-window:].reshape(1, -1)
+    prediction = model.predict(last_window)[0]
+
+    return {
+        "status": "success",
+        "model": "scikit-learn RandomForestRegressor",
+        "purpose": "Attack trend / alert-count forecasting",
+        "input_window": alert_counts[-window:].tolist(),
+        "predicted_next_alert_count": round(float(prediction), 2),
+        "explanation": (
+            "The model learns from previous alert-count windows and predicts "
+            "the next expected alert count."
+        ),
+        "timestamp": datetime.utcnow().isoformat()
+    }
+
+
 @app.get("/test-db")
 def test_db():
     db = SessionLocal()
