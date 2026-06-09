@@ -1,4 +1,5 @@
 import ipaddress
+import math
 
 
 def is_external_ip(src_ip: str) -> int:
@@ -60,8 +61,8 @@ def predict_risk(
 ):
     """
     Explainable proof-of-concept risk scoring model.
-    This is not a black-box model. It calculates risk using event context,
-    IoT indicators, adversarial indicators, and recent alert activity.
+    It calculates risk using event context, IoT indicators,
+    adversarial indicators, and recent alert activity.
     """
 
     features = extract_features(
@@ -78,38 +79,39 @@ def predict_risk(
         adversarial_detected=adversarial_detected,
     )
 
-    # Base risk from severity
-    risk = 0.10 + (severity * 0.08)
+    # Balanced base risk from alert severity
+    risk = 0.08 + (severity * 0.07)
 
-    # Include simulator/model risk if available
-    risk += float(event_risk_score) * 0.20
+    # Include simulator event risk without letting it dominate completely
+    risk += float(event_risk_score) * 0.18
 
-    # Contextual risk indicators
+    # Contextual indicators
     if features["is_external_ip"]:
-        risk += 0.10
+        risk += 0.08
     if features["signature_sqlmap"]:
-        risk += 0.15
+        risk += 0.10
     if features["signature_iot"]:
-        risk += 0.05
+        risk += 0.03
     if features["signature_command_injection"]:
-        risk += 0.12
+        risk += 0.08
     if telemetry_spike:
-        risk += 0.08
+        risk += 0.04
     if unexpected_protocol:
-        risk += 0.08
-    if command_injection:
-        risk += 0.12
-    if firmware_outdated:
-        risk += 0.08
-    if is_edge_device:
         risk += 0.05
+    if command_injection:
+        risk += 0.08
+    if firmware_outdated:
+        risk += 0.05
+    if is_edge_device:
+        risk += 0.03
     if adversarial_detected:
-        risk += 0.15
+        risk += 0.10
 
-    # Repeated activity raises risk gradually
-    risk += min(recent_alert_count, 10) * 0.02
+    # Repeated activity increases risk, but slowly.
+    # log1p prevents high alert counts from pushing every event to 0.99.
+    risk += min(math.log1p(recent_alert_count) * 0.035, 0.15)
 
-    risk_score = round(min(risk, 0.99), 2)
+    risk_score = round(min(risk, 0.95), 2)
     predicted_attack = risk_score >= 0.70
 
     return risk_score, predicted_attack, features
