@@ -244,8 +244,21 @@ def simulate_iot_threat():
 
         src_ip = simulated.get("src_ip", "192.168.100.118")
         threat_type = simulated.get("threat_type", "normal")
-        severity = 5 if threat_type != "normal" else 2
+
+        event_risk = float(simulated.get("risk_score", 0.0))
+        if event_risk >= 0.90:
+            severity = 5
+        elif event_risk >= 0.80:
+            severity = 4
+        elif event_risk >= 0.70:
+            severity = 3
+        elif event_risk >= 0.50:
+            severity = 2
+        else:
+            severity = 1
+
         signature = f"IOT_{threat_type}"
+        recent_alert_count = db.query(Alert).filter(Alert.src_ip == src_ip).count()
 
         alert_row = insert_alert(
             db,
@@ -258,7 +271,7 @@ def simulate_iot_threat():
             "device_type": simulated.get("device_type", "unknown"),
             "unexpected_protocol": simulated.get("unexpected_protocol", 0),
             "telemetry_spike": simulated.get("telemetry_spike", 0),
-            "recent_alert_count": 1,
+            "recent_alert_count": recent_alert_count,
             "command_injection": simulated.get("command_injection", 0)
         }
 
@@ -267,8 +280,15 @@ def simulate_iot_threat():
         risk_score, predicted_attack, features = predict_risk(
             severity=severity,
             signature=signature,
-            recent_alert_count=1,
-            src_ip=src_ip
+            recent_alert_count=recent_alert_count,
+            src_ip=src_ip,
+            event_risk_score=simulated.get("risk_score", 0.0),
+            telemetry_spike=simulated.get("telemetry_spike", 0),
+            unexpected_protocol=simulated.get("unexpected_protocol", 0),
+            command_injection=simulated.get("command_injection", 0),
+            firmware_outdated=simulated.get("firmware_outdated", 0),
+            is_edge_device=simulated.get("is_edge_device", 0),
+            adversarial_detected=ml_result.get("adversarial_detected", 0)
         )
 
         prediction_row = insert_prediction(
